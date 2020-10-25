@@ -5,17 +5,31 @@ class App extends React.Component {
 
   constructor(props){
     super();
+    
+    const toDoListSaved
+    = JSON.parse(localStorage.getItem('toDoList'))||[];
 
     this.state = {
-      toDoList:[],
+      toDoList: toDoListSaved,
       title:"",
       description:"",
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleAddItem = this.handleAddItem.bind(this);
+    this.deleteItem = this.deleteItem.bind(this);
   }
 
   render(){
+    let toDoListDisplay = this.state.toDoList;
+    const toDoListUI = toDoListDisplay.map((item,index,array)=>
+    (<div key={index}>
+      {index}: Title: {item.title}<br />
+      description: {item.description}<br />
+      Creation: {new Date(item.creation).toLocaleTimeString()}<br />
+      <button name="delete" value={item.creation} onClick={this.deleteItem}>Delete</button>
+      <hr />
+    </div>));
+
     return (
       <div className="App">
         <h1>To Do List</h1> <hr />
@@ -26,6 +40,7 @@ class App extends React.Component {
         onChange={this.handleChange} /><br />
         <button name="add" onClick={this.handleAddItem}>Add</button>
         <hr />
+        {toDoListUI}
       </div>
     );
   }
@@ -55,12 +70,17 @@ class App extends React.Component {
       let newList = [...this.state.toDoList, newItem];
       this.setState({toDoList: newList});
     
-      let message =
-        newItem.title +"\n" +
-        newItem.description +"\n" + newItem.creation;
-        alert(message);
-    
-        console.log(this.state.toDoList);
+  }
+
+  deleteItem(e){
+    const creation = parseInt(e.target.value);
+    const newList = this.state.toDoList;
+
+    const index = newList.findIndex(item => item.creation === creation);
+
+    if (index >= 0) newList.splice(index,1);
+    this.setState({toDoList: newList});
+    localStorage.setItem('toDoList', JSON.stringify(newList));
   }
 
 }
