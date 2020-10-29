@@ -60,7 +60,7 @@ class App extends React.Component {
       alert('Title is empty'); return;
     }
     
-      let newItem = {
+      const newItem = {
         title: this.state.title,
         description: this.state.description,
         creation: Date.now()
@@ -69,6 +69,7 @@ class App extends React.Component {
     
       let newList = [...this.state.toDoList, newItem];
       this.setState({toDoList: newList});
+      localStorage.setItem('toDoList', JSON.stringify(newList));
     
   }
 
